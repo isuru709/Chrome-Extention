@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Downloader Pro</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <div class="logo">📥</div>
+      <div class="header-text">
+        <h1>Video Downloader Pro</h1>
+        <p class="subtitle">Download videos & audio in high quality</p>
+      </div>
+    </header>
+
+    <!-- URL Input Section -->
+    <div class="section">
+      <label for="urlInput">
+        Video URL
+        <span class="label-desc">Paste the link to download</span>
+      </label>
+      <div class="input-group">
+        <input 
+          type="url" 
+          id="urlInput" 
+          placeholder="https://youtube.com/watch?v=..." 
+          autocomplete="off"
+        >
+        <button id="autoFillBtn" class="icon-btn" title="Auto-fill from current tab">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+          </svg>
+        </button>
+      </div>
+      
+      <!-- Detected Media Selector -->
+      <div id="detectedMediaSection" class="hidden" style="margin-top: 12px;">
+        <label for="detectedMediaSelect" style="margin-bottom: 6px; font-size: 12px; color: var(--success);">
+          🎬 Detected Media (Select one)
+        </label>
+        <select id="detectedMediaSelect" style="font-size: 13px; padding: 8px 10px;">
+          <option value="">-- Select detected media --</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Download Type -->
+    <div class="section">
+      <label>Download Type</label>
+      <div class="radio-group">
+        <label class="radio-card">
+          <input type="radio" name="downloadType" value="video" checked>
+          <div class="radio-content">
+            <div class="radio-icon">🎥</div>
+            <div class="radio-label">Video</div>
+          </div>
+        </label>
+        <label class="radio-card">
+          <input type="radio" name="downloadType" value="audio">
+          <div class="radio-content">
+            <div class="radio-icon">🎵</div>
+            <div class="radio-label">Audio</div>
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <!-- Quality Options -->
+    <div class="section" id="videoQualitySection">
+      <label for="videoQuality">
+        Video Quality
+        <span class="label-desc">Select maximum resolution</span>
+      </label>
+      <select id="videoQuality">
+        <option value="">Best Available</option>
+        <option value="2160">4K (2160p)</option>
+        <option value="1440">2K (1440p)</option>
+        <option value="1080">Full HD (1080p)</option>
+        <option value="720">HD (720p)</option>
+        <option value="480">SD (480p)</option>
+        <option value="360">Low (360p)</option>
+      </select>
+    </div>
+
+    <div class="section hidden" id="audioQualitySection">
+      <label for="audioQuality">
+        Audio Quality
+        <span class="label-desc">Select bitrate</span>
+      </label>
+      <select id="audioQuality">
+        <option value="320">High (320 kbps)</option>
+        <option value="192" selected>Standard (192 kbps)</option>
+        <option value="128">Medium (128 kbps)</option>
+        <option value="64">Low (64 kbps)</option>
+      </select>
+    </div>
+
+    <!-- Custom Cookies (Optional) -->
+    <div class="section collapsible">
+      <button class="collapse-header" id="cookiesToggle">
+        <span>⚙️ Advanced: Custom Cookies (Optional)</span>
+        <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </button>
+      <div class="collapse-content" id="cookiesContent">
+        <label for="customCookies">
+          <span class="label-desc">Cookies are auto-captured from the current domain. Only paste here if you need to override with custom cookies in Netscape format.</span>
+        </label>
+        <textarea 
+          id="customCookies" 
+          placeholder="# Netscape HTTP Cookie File&#10;.youtube.com	TRUE	/	TRUE	1234567890	cookie_name	cookie_value"
+          rows="4"
+        ></textarea>
+      </div>
+    </div>
+
+    <!-- Download Button -->
+    <button id="downloadBtn" class="btn btn-primary">
+      <svg class="btn-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+        <polyline points="7 10 12 15 17 10"></polyline>
+        <line x1="12" y1="15" x2="12" y2="3"></line>
+      </svg>
+      <span id="btnText">Download</span>
+    </button>
+
+    <!-- Status Messages -->
+    <div id="statusSection" class="hidden">
+      <div id="statusBox" class="status-box">
+        <div class="status-content">
+          <div class="spinner hidden" id="spinner"></div>
+          <p id="statusMessage"></p>
+        </div>
+        <div class="progress-bar hidden" id="progressBar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Download Result -->
+    <div id="resultSection" class="hidden">
+      <div class="result-box success" id="resultBox">
+        <div class="result-icon">✓</div>
+        <div class="result-content">
+          <h3 id="resultTitle">Download Complete!</h3>
+          <p id="resultMessage"></p>
+          <a id="downloadLink" class="btn btn-secondary" target="_blank">
+            Open File
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings Footer -->
+    <div class="footer">
+      <button id="settingsBtn" class="text-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M12 1v6m0 6v6m-6-6h6m6 0h-6"></path>
+        </svg>
+        Settings
+      </button>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="settingsModal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Settings</h2>
+        <button class="close-btn" id="closeSettings">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="apiUrlInput">API Server URL</label>
+          <input 
+            type="url" 
+            id="apiUrlInput" 
+            placeholder="https://uni.isuruhub.site:8443" 
+            value="https://uni.isuruhub.site:8443"
+          >
+          <small>Enter your video downloader API server address</small>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="saveSettings" class="btn btn-primary">Save Settings</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
